@@ -48,7 +48,7 @@ class LeapListener extends Listener implements Runnable {
     public void onConnect(Controller controller) {
         System.out.println("Conectado");
         connect = true;
-
+        System.out.println(isConnected());
     }
 
     /**

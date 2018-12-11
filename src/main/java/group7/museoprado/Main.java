@@ -72,11 +72,11 @@ public class Main extends JFrame implements Runnable{
     private JButton previous3;
     private JButton next3;
 
-    // Frame Photo
+    // TODO Frame Photo
     private JFrame screen3;
     private JLabel photo5;
 
-    // Frame Info
+    // TODO Frame Info
     private JFrame screen4;
     private JTextArea inf;
 
@@ -116,9 +116,12 @@ public class Main extends JFrame implements Runnable{
         timegesture= System.currentTimeMillis();
         hidden = true;
         robot = new Robot();
+        timegesture=0;
 
         Path currentRelativePath = Paths.get("");
         PATH = currentRelativePath.toAbsolutePath().toString();
+
+
         initComponents();
         state=nscreen.ON_MUSEUM;
 
@@ -249,7 +252,6 @@ public class Main extends JFrame implements Runnable{
                 setLocationRelativeTo(getOwner());
             } break;
             case 1: {
-                gallery1 = new JFrame();
                 bggallery = new JLabel();
                 photo = new JLabel();
                 out = new JButton();
@@ -402,7 +404,6 @@ public class Main extends JFrame implements Runnable{
                 bggallery.setVisible(true);
             } break;
             case 2: {
-                gallery2 = new JFrame();
                 bggallery = new JLabel();
                 photo2 = new JLabel();
                 out2 = new JButton();
@@ -552,7 +553,6 @@ public class Main extends JFrame implements Runnable{
                 bggallery.setVisible(true);
             } break;
             case 3: {
-                screen1 = new JFrame();
                 photo3 = new JLabel();
                 list3 = new JButton();
                 info3 = new JButton();
@@ -646,7 +646,6 @@ public class Main extends JFrame implements Runnable{
                 screen1.getContentPane().add(bggallery);
             } break;
             case 4: {
-                screen2 = new JFrame();
                 photo4 = new JLabel();
                 info4 = new JButton();
                 out4 = new JButton();
@@ -756,6 +755,10 @@ public class Main extends JFrame implements Runnable{
     }
 
     void initComponents(){
+        gallery1 = new JFrame();
+        gallery2 = new JFrame();
+        screen1 = new JFrame();
+        screen2 = new JFrame();
         configure(0);
     }
 
@@ -927,40 +930,40 @@ public class Main extends JFrame implements Runnable{
 
                 // IMPLEMENT LEAP ACTIONS
 
-                int beginX=0,beginY=0,WIDTH=0,HEIGHT=0;
-                float rangeX,rangeY;
+                double beginX=0,beginY=0,wth=0,ht=0;
+                double rangeX,rangeY;
 
                 switch (state){
                     case ON_MAIN:
                     case ON_MUSEUM:
                         beginX= this.getLocation().x;
                         beginY= this.getLocation().y;
-                        WIDTH= this.getWidth();
-                        HEIGHT = this.getHeight();
+                        wth= this.getWidth();
+                        ht = this.getHeight();
                         break;
                     case ON_GALLERY1:
                         beginX = gallery1.getLocation().x;
                         beginY = gallery1.getLocation().y;
-                        WIDTH= gallery1.getWidth();
-                        HEIGHT = gallery1.getHeight();
+                        wth= gallery1.getWidth();
+                        ht = gallery1.getHeight();
                         break;
                     case ON_GALLERY2:
                         beginX = gallery2.getLocation().x;
                         beginY = gallery2.getLocation().y;
-                        WIDTH= gallery2.getWidth();
-                        HEIGHT = gallery2.getHeight();
+                        wth= gallery2.getWidth();
+                        ht = gallery2.getHeight();
                         break;
                     case ON_AUTHOR:
                         beginX = screen1.getLocation().x;
                         beginY = screen1.getLocation().y;
-                        WIDTH= screen1.getWidth();
-                        HEIGHT = screen1.getHeight();
+                        wth= screen1.getWidth();
+                        ht = screen1.getHeight();
                         break;
                     case ON_PAINTINGS_AUTHOR:
                         beginX = screen2.getLocation().x;
                         beginY = screen2.getLocation().y;
-                        WIDTH= screen2.getWidth();
-                        HEIGHT = screen2.getHeight();
+                        wth= screen2.getWidth();
+                        ht = screen2.getHeight();
                         break;
                     case ON_INFO:
                         // TODO
@@ -969,52 +972,77 @@ public class Main extends JFrame implements Runnable{
                         //TODO
                         break;
                 }
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                beginX = beginY = 0;
 
-                rangeX = fm.interactionBox().width();
-                rangeY = fm.interactionBox().height();
+                wth = screenSize.getWidth();
+                ht = screenSize.getHeight();
+
+                rangeX =150.0;// fm.interactionBox().width();
+                rangeY = 1.8*fm.interactionBox().height();
 
                 float POSX= fm.hands().get(0).palmPosition().getX();
                 float POSY = fm.hands().get(0).palmPosition().getY();
+                POSY = POSY<15 ? 0:POSY;
 
-                int X = beginX + (int)(POSX+rangeX)*(HEIGHT/(2*(int)rangeX));
-                int Y = beginY + (int)(POSX+rangeY)*(WIDTH/(2*(int)rangeX));
+                int X = (int)beginX + (int)((POSX+rangeX)*(wth/(2*rangeX)));
+                int Y = (int)beginY + (int)((rangeY-POSY)*(ht/(rangeY)));
+
+                System.out.println((beginX+wth) +" " + rangeX + " " + POSX+" "+ X);
 
                 robot.mouseMove(X,Y);
 
-                if(ref.sphereRadius()<40){
+                if(ref.sphereRadius()<40 && (System.currentTimeMillis()-timegesture)>2000){
+                    timegesture=System.currentTimeMillis();
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
 
                 // TODO PENSAR MAS GESTOS
 
-                switch (state){
-                    case ON_GALLERY1:
-                        if(Math.abs(ref.palmNormal().getY())<0.1){
-                            if(ref.palmVelocity().getX()>100)
-                                nextAuthor();
-                            else if(ref.palmVelocity().getX()<-100)
-                                previousAuthor();
+                //System.out.println(ref.palmNormal().getX());
+                if((System.currentTimeMillis()-timegesture)>2000){
 
-                        }
-                        break;
-                    case ON_GALLERY2:
-                    case ON_PAINTINGS_AUTHOR:
-                        if(Math.abs(ref.palmNormal().getY())<0.1){
-                            if(ref.palmVelocity().getX()>100)
-                                nextPaint();
-                            else if(ref.palmVelocity().getX()<-100)
-                                previousPaint();
+                    switch (state){
+                        case ON_GALLERY1:
+                            if(Math.abs(ref.palmNormal().getX())>0.85){
+                                if(ref.palmVelocity().getX()>100){
+                                    timegesture=System.currentTimeMillis();
+                                    nextAuthor();
+                                }
+                                else if(ref.palmVelocity().getX()<-100){
+                                    timegesture=System.currentTimeMillis();
+                                    previousAuthor();
+                                }
 
-                        }
-                        break;
-                    case ON_SHOW:
-                        // TODO ZOOM
-                        break;
-                    case ON_INFO:
-                        // TODO SCROLL
-                        break;
+
+                            }
+                            break;
+                        case ON_GALLERY2:
+                        case ON_PAINTINGS_AUTHOR:
+                            if(Math.abs(ref.palmNormal().getX())>0.85){
+                                if(ref.palmVelocity().getX()>100){
+                                    timegesture=System.currentTimeMillis();
+                                    nextPaint();
+                                }
+
+                                else if(ref.palmVelocity().getX()<-100){
+                                    timegesture=System.currentTimeMillis();
+                                    previousPaint();
+                                }
+
+
+                            }
+                            break;
+                        case ON_SHOW:
+                            // TODO ZOOM
+                            break;
+                        case ON_INFO:
+                            // TODO SCROLL
+                            break;
+                    }
                 }
+
             }
             else {
                 rcg.setText("Not recognizing...");
@@ -1033,6 +1061,11 @@ public class Main extends JFrame implements Runnable{
     @Override
     public void run() {
         while(true){
+            /*Frame fm=lp.getUltimoFrame();
+            if(fm.hands().count()==1){
+                Hand hd = fm.hands().get(0);
+                System.out.println(hd.palmPosition().getX());
+            }*/
             try {
                 listen();
             } catch (InterruptedException e) {

@@ -79,6 +79,7 @@ public class Main extends JFrame implements Runnable{
     // TODO Frame Info
     private JFrame screen4;
     private JTextArea inf;
+    private JScrollPane scroll;
 
 
     private LeapListener lp;
@@ -313,7 +314,7 @@ public class Main extends JFrame implements Runnable{
                 info.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        openInfo(1,state);
+                        openInfo(0,state);
                     }
                 });
                 gallery1.getContentPane().add(info);
@@ -544,7 +545,7 @@ public class Main extends JFrame implements Runnable{
                 photo2.setBounds(150,100,700,500);
                 photo2.setVisible(true);
 
-                bggallery.setIcon(new ImageIcon(new javax.swing.ImageIcon(PATH+"/src/main/java/group7/museoprado/bg.jpg").getImage().getScaledInstance(gallery2.getWidth(),gallery2.getHeight(), Image.SCALE_DEFAULT)));
+                bggallery.setIcon(new ImageIcon(new javax.swing.ImageIcon(PATH+"/src/main/assets/bg.jpg").getImage().getScaledInstance(gallery2.getWidth(),gallery2.getHeight(), Image.SCALE_DEFAULT)));
                 bggallery.setPreferredSize(new Dimension(gallery2.getWidth(), gallery2.getHeight()));
                 bggallery.setMinimumSize(new Dimension(gallery2.getWidth(), gallery2.getHeight()));
                 bggallery.setMaximumSize(new Dimension(6000, 44422));
@@ -751,6 +752,30 @@ public class Main extends JFrame implements Runnable{
                 screen2.getContentPane().add(bggallery);
 
             } break;
+            case 5: {
+
+                inf= new JTextArea();
+                scroll = new JScrollPane();
+
+                screen4.setPreferredSize(new Dimension(400, 400));
+                screen4.setResizable(false);
+                screen4.setTitle("Información");
+                Container frame1ContentPane = screen4.getContentPane();
+                frame1ContentPane.setLayout(null);
+                screen4.pack();
+                screen4.setLocationRelativeTo(screen4.getOwner());
+                screen4.setVisible(true);
+                screen4.getContentPane().add(scroll);
+
+                inf.setLineWrap(true);
+                inf.setEditable(false);
+                inf.setBorder(UIManager.getBorder("RootPane.frameBorder"));
+                scroll.setViewportView(inf);
+                screen4.getContentPane().add(scroll);
+
+                scroll.setBounds(0,0,400,400);
+
+            } break;
         }
     }
 
@@ -759,6 +784,7 @@ public class Main extends JFrame implements Runnable{
         gallery2 = new JFrame();
         screen1 = new JFrame();
         screen2 = new JFrame();
+        screen4 = new JFrame();
         configure(0);
     }
 
@@ -873,7 +899,30 @@ public class Main extends JFrame implements Runnable{
         }
     }
 
-    private void openInfo(int type,nscreen state) {
+    private void openInfo(int type,nscreen st) {
+        configure(5);
+        final nscreen sts=st;
+        state=nscreen.ON_INFO;
+        screen4.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                state=sts;
+                super.windowClosing(e);
+            }
+        });
+        String text;
+        if(type==1){
+            text = db.getInfoPaint();
+        }
+        else{
+            text=db.getInfoArtist();
+        }
+
+        inf.setText(text);
+
+        inf.setSelectionStart(0);
+        inf.setSelectionEnd(0);
+
     }
 
     private void nextPaint() throws IOException {
@@ -978,8 +1027,8 @@ public class Main extends JFrame implements Runnable{
                 wth = screenSize.getWidth();
                 ht = screenSize.getHeight();
 
-                rangeX =150.0;// fm.interactionBox().width();
-                rangeY = 1.8*fm.interactionBox().height();
+                rangeX =fm.interactionBox().width();
+                rangeY = 2*fm.interactionBox().height();
 
                 float POSX= fm.hands().get(0).palmPosition().getX();
                 float POSY = fm.hands().get(0).palmPosition().getY();
@@ -988,11 +1037,24 @@ public class Main extends JFrame implements Runnable{
                 int X = (int)beginX + (int)((POSX+rangeX)*(wth/(2*rangeX)));
                 int Y = (int)beginY + (int)((rangeY-POSY)*(ht/(rangeY)));
 
-                System.out.println((beginX+wth) +" " + rangeX + " " + POSX+" "+ X);
+                boolean onlyindex=true;
+                boolean closed = true;
 
-                robot.mouseMove(X,Y);
+                for(Finger f:ref.fingers()){
+                    if(f.type()== Finger.Type.TYPE_INDEX){
+                        onlyindex = onlyindex && f.isExtended();
+                        closed = closed && !f.isExtended();
+                    }
+                    else{
+                        onlyindex = onlyindex && !f.isExtended();
+                        closed = closed && !f.isExtended();
+                    }
+                }
 
-                if(ref.sphereRadius()<40 && (System.currentTimeMillis()-timegesture)>2000){
+                if(onlyindex)
+                    robot.mouseMove(X,Y);
+
+                if(closed && (System.currentTimeMillis()-timegesture)>2000){
                     timegesture=System.currentTimeMillis();
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
@@ -1020,7 +1082,30 @@ public class Main extends JFrame implements Runnable{
                             break;
                         case ON_GALLERY2:
                         case ON_PAINTINGS_AUTHOR:
-                            if(Math.abs(ref.palmNormal().getX())>0.85){
+
+                            if(fm.hands().count()==2){
+                                Hand left,right;
+
+                                if (fm.hands().get(0).isLeft()){
+                                    left = fm.hands().get(0);
+                                    right = fm.hands().get(1);
+                                }
+                                else{
+                                    left = fm.hands().get(1);
+                                    right = fm.hands().get(0);
+                                }
+
+                                if (Math.abs(left.palmNormal().getX()) > 0.85 && Math.abs(right.palmNormal().getX()) > 0.85){
+                                    if (left.palmVelocity().getX() < -25 && right.palmVelocity().getX() > 25){
+                                        System.out.println("ZOOM IN");
+                                    }
+
+                                    else if (left.palmVelocity().getX() > 25 && right.palmVelocity().getX() < -25){
+                                        System.out.println("ZOOM OUT");
+                                    }
+                                }
+                            }
+                            else if(Math.abs(ref.palmNormal().getX())>0.85){
                                 if(ref.palmVelocity().getX()>100){
                                     timegesture=System.currentTimeMillis();
                                     nextPaint();
@@ -1030,19 +1115,20 @@ public class Main extends JFrame implements Runnable{
                                     timegesture=System.currentTimeMillis();
                                     previousPaint();
                                 }
-
-
                             }
+
                             break;
                         case ON_SHOW:
                             // TODO ZOOM
                             break;
                         case ON_INFO:
-                            // TODO SCROLL
+                            if(ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200)
+                                screen4.dispose();
                             break;
                     }
                 }
 
+                //System.out.println(ref.palmNormal().getX()+" "+ ref.palmNormal().getY()+" "+ref.palmNormal().getZ());
             }
             else {
                 rcg.setText("Not recognizing...");

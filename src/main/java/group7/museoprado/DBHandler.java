@@ -10,8 +10,11 @@ import com.google.firebase.cloud.FirestoreClient;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import org.jsoup.Jsoup;
@@ -56,21 +59,51 @@ public class DBHandler {
         DocumentSnapshot paint = paintings.get(INDEX_PAINT);
 
         ArrayList<String> name = (ArrayList<String>) paint.get("name");
-        info+=("<b>Nombre:</b> "+ name.get(0));
+        info+=("Nombre:\n\t"+ name.get(0));
         if(name.size()>1){
 
             for(int i=1;i<name.size()-1;++i)
                 info+=(", " + name.get(i));
             info+=(" o " + name.get(name.size()-1));
         }
-        info+=("<br/>");
-        info+=("<b> Autor: </b> "+ paint.get("autor")+ ", " + paint.get("date")+ "<br/>");
+        info+=("\n");
+        info+=(" Autor:\n\t"+ paint.get("autor")+ ", " + paint.get("date")+ "\n");
         if(paint.contains("collection"))
-            info+=("<b> Coleccion: </b> "+ paint.get("collection") + "<br/>");
+            info+=("Coleccion:\n\t"+ paint.get("collection") + "\n");
         if(paint.contains("sala"))
-            info+=("<b> Sala: </b> "+ paint.get("sala") + "<br/>");
-        info+=("<b> Resumen: </b> "+ paint.get("resumen") + "<br/>");
+            info+=("Sala:\n\t"+ paint.get("sala") + "\n");
+        info+=(" Resumen:\n\t"+ paint.get("info") + "");
         return  info;
+    }
+
+    public String getInfoArtist(){
+        String info = "";
+        info+=("Nombre:\n\t"+ ARTIST.get("name")+"\n");
+        Date birth = ARTIST.getDate("birthdate");
+        Date death = ARTIST.getDate("deathdate");
+        SimpleDateFormat ft =
+                new SimpleDateFormat ("dd/MMMM/yyyy");
+        info+=("Fecha de Nacimiento:\n\t"+ ft.format(birth)+ "\n");
+        info+=("Lugar de Nacimiento: \n\t"+ ARTIST.get("birthplace")+"\n");
+        info+=("Fecha de Fallecimiento:\n\t"+ ft.format(death)+ "\n");
+        if(ARTIST.contains("etapas")) {
+            Map<String, String> etapas = (Map) ARTIST.get("etapas");
+            info += ("Etapas:\n");
+            for (String key : etapas.keySet())
+                info += ( key + ": " + etapas.get(key) + "\n");
+        }
+        ArrayList<String> influencias = (ArrayList<String>) ARTIST.get("influencias");
+        info+=("nfluencias: \n\t"+ influencias.get(0));
+        for(int i=1;i<influencias.size();++i)
+            info+=(","+influencias.get(i));
+        info+=("\n");
+
+        ArrayList<String> life = (ArrayList<String>) ARTIST.get("lifeplace");
+        info+=("Donde vivio: \n\t"+ life.get(0));
+        for(int i=1;i<life.size();++i)
+            info+=(","+ life.get(i));
+        info+=("\n\nResumen:\n\t"+ARTIST.get("info"));
+        return info;
     }
 
 

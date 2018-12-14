@@ -1187,16 +1187,13 @@ public class Main extends JFrame implements Runnable{
                 int Y = (int)((rangeY-POSY)*(ht/(rangeY)));
 
                 boolean onlyindex=true;
-                boolean closed = true;
 
                 for(Finger f:ref.fingers()){
                     if(f.type()== Finger.Type.TYPE_INDEX){
                         onlyindex = onlyindex && f.isExtended();
-                        closed = closed && !f.isExtended();
                     }
                     else{
                         onlyindex = onlyindex && !f.isExtended();
-                        closed = closed && !f.isExtended();
                     }
                 }
 

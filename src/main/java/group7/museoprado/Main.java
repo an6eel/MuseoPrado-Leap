@@ -186,7 +186,8 @@ public class Main extends JFrame implements Runnable{
                 salir.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        ExitMain();
+                        if(state==nscreen.ON_MAIN)
+                            ExitMain();
                     }
                 });
                 contentPane.add(salir);
@@ -201,12 +202,15 @@ public class Main extends JFrame implements Runnable{
                 Obras.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        state=nscreen.ON_GALLERY2;
-                        try {
-                            openGalleryObras();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_MAIN){
+                            state=nscreen.ON_GALLERY2;
+                            try {
+                                openGalleryObras();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 contentPane.add(Obras);
@@ -221,16 +225,20 @@ public class Main extends JFrame implements Runnable{
                 Artistas.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        state=nscreen.ON_GALLERY1;
-                        try {
-                            openGalleryAutores();
-                        } catch (ExecutionException e1) {
-                            e1.printStackTrace();
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+
+                        if(state==nscreen.ON_MAIN){
+                            state=nscreen.ON_GALLERY1;
+                            try {
+                                openGalleryAutores();
+                            } catch (ExecutionException e1) {
+                                e1.printStackTrace();
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 contentPane.add(Artistas);
@@ -257,6 +265,7 @@ public class Main extends JFrame implements Runnable{
                 setLocationRelativeTo(getOwner());
             } break;
             case 1: {
+                gallery1 = new JFrame();
                 bggallery = new JLabel();
                 photo = new JLabel();
                 out = new JButton();
@@ -301,8 +310,11 @@ public class Main extends JFrame implements Runnable{
                 out.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        state=nscreen.ON_MAIN;
-                        gallery1.dispose();
+                        if(state==nscreen.ON_GALLERY1){
+                            state=nscreen.ON_MAIN;
+                            gallery1.dispose();
+                        }
+
                     }
                 });
                 gallery1.getContentPane().add(out);
@@ -318,11 +330,14 @@ public class Main extends JFrame implements Runnable{
                 info.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            openInfo(0,state);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if (state==nscreen.ON_GALLERY1){
+                            try {
+                                openInfo(0,state);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery1.getContentPane().add(info);
@@ -338,11 +353,14 @@ public class Main extends JFrame implements Runnable{
                 list.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            openScreen2(state);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY1){
+                            try {
+                                openScreen2(state);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery1.getContentPane().add(list);
@@ -358,15 +376,18 @@ public class Main extends JFrame implements Runnable{
                 previous.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            previousAuthor();
-                        } catch (ExecutionException e1) {
-                            e1.printStackTrace();
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY1){
+                            try {
+                                previousAuthor();
+                            } catch (ExecutionException e1) {
+                                e1.printStackTrace();
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery1.getContentPane().add(previous);
@@ -382,15 +403,18 @@ public class Main extends JFrame implements Runnable{
                 next.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            nextAuthor();
-                        } catch (ExecutionException e1) {
-                            e1.printStackTrace();
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state == nscreen.ON_GALLERY1){
+                            try {
+                                nextAuthor();
+                            } catch (ExecutionException e1) {
+                                e1.printStackTrace();
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery1.getContentPane().add(next);
@@ -407,11 +431,14 @@ public class Main extends JFrame implements Runnable{
                 photo.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            onImage(photo.getIcon());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY1){
+                            try {
+                                onImage(photo.getIcon());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 bggallery.setIcon(new ImageIcon(new javax.swing.ImageIcon(PATH+"/src/main/assets/bg.jpg").getImage().getScaledInstance(gallery1.getWidth(),gallery1.getHeight(), Image.SCALE_DEFAULT)));
@@ -423,6 +450,7 @@ public class Main extends JFrame implements Runnable{
                 bggallery.setVisible(true);
             } break;
             case 2: {
+                gallery2 = new JFrame();
                 bggallery = new JLabel();
                 photo2 = new JLabel();
                 out2 = new JButton();
@@ -467,8 +495,11 @@ public class Main extends JFrame implements Runnable{
                 out2.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        state=nscreen.ON_MAIN;
-                        gallery2.dispose();
+                        if(state==nscreen.ON_GALLERY2){
+                            state=nscreen.ON_MAIN;
+                            gallery2.dispose();
+                        }
+
                     }
                 });
                 gallery2.getContentPane().add(out2);
@@ -484,11 +515,14 @@ public class Main extends JFrame implements Runnable{
                 info2.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            openInfo(1,state);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY2){
+                            try {
+                                openInfo(1,state);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery2.getContentPane().add(info2);
@@ -504,16 +538,19 @@ public class Main extends JFrame implements Runnable{
                 list2.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        state=nscreen.ON_AUTHOR;
-                        try {
-                            openScreen1();
-                        } catch (ExecutionException e1) {
-                            e1.printStackTrace();
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY2){
+                            state=nscreen.ON_AUTHOR;
+                            try {
+                                openScreen1();
+                            } catch (ExecutionException e1) {
+                                e1.printStackTrace();
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery2.getContentPane().add(list2);
@@ -529,11 +566,14 @@ public class Main extends JFrame implements Runnable{
                 previous2.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            previousPaint();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY2){
+                            try {
+                                previousPaint();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery2.getContentPane().add(previous2);
@@ -549,11 +589,14 @@ public class Main extends JFrame implements Runnable{
                 next2.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            nextPaint();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY2){
+                            try {
+                                nextPaint();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 gallery2.getContentPane().add(next2);
@@ -570,11 +613,14 @@ public class Main extends JFrame implements Runnable{
                 photo2.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            onImage(photo2.getIcon());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_GALLERY2){
+                            try {
+                                onImage(photo2.getIcon());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
 
@@ -587,6 +633,7 @@ public class Main extends JFrame implements Runnable{
                 bggallery.setVisible(true);
             } break;
             case 3: {
+                screen1 = new JFrame();
                 photo3 = new JLabel();
                 list3 = new JButton();
                 info3 = new JButton();
@@ -626,8 +673,11 @@ public class Main extends JFrame implements Runnable{
                 out3.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        state=nscreen.ON_GALLERY2;
-                        screen1.dispose();
+                        if(state==nscreen.ON_AUTHOR){
+                            state=nscreen.ON_GALLERY2;
+                            screen1.dispose();
+                        }
+
                     }
                 });
                 screen1.getContentPane().add(out3);
@@ -643,11 +693,14 @@ public class Main extends JFrame implements Runnable{
                 info3.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            openInfo(0,state);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_AUTHOR){
+                            try {
+                                openInfo(0,state);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 screen1.getContentPane().add(info3);
@@ -663,11 +716,14 @@ public class Main extends JFrame implements Runnable{
                 list3.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            openScreen2(state);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_AUTHOR){
+                            try {
+                                openScreen2(state);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 screen1.getContentPane().add(list3);
@@ -683,17 +739,21 @@ public class Main extends JFrame implements Runnable{
                 photo3.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            onImage(photo3.getIcon());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_AUTHOR){
+                            try {
+                                onImage(photo3.getIcon());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
 
                 screen1.getContentPane().add(bggallery);
             } break;
             case 4: {
+                screen2 = new JFrame();
                 photo4 = new JLabel();
                 info4 = new JButton();
                 out4 = new JButton();
@@ -729,11 +789,14 @@ public class Main extends JFrame implements Runnable{
                 photo4.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            onImage(photo4.getIcon());
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_PAINTINGS_AUTHOR){
+                            try {
+                                onImage(photo4.getIcon());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
 
@@ -746,12 +809,14 @@ public class Main extends JFrame implements Runnable{
                 info4.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-
-                        try {
-                            openInfo(1,state);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_PAINTINGS_AUTHOR){
+                            try {
+                                openInfo(1,state);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 screen2.getContentPane().add(info4);
@@ -778,12 +843,15 @@ public class Main extends JFrame implements Runnable{
                 previous3.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            previousPaint();
+                        if(state==nscreen.ON_PAINTINGS_AUTHOR){
+                            try {
+                                previousPaint();
 
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 screen2.getContentPane().add(previous3);
@@ -799,11 +867,14 @@ public class Main extends JFrame implements Runnable{
                 next3.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        try {
-                            nextPaint();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if(state==nscreen.ON_PAINTINGS_AUTHOR){
+                            try {
+                                nextPaint();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+
                     }
                 });
                 screen2.getContentPane().add(next3);
@@ -814,7 +885,8 @@ public class Main extends JFrame implements Runnable{
 
             } break;
             case 5: {
-
+                screen4 = new JFrame();
+                screen4.setAlwaysOnTop(true);
                 inf= new JTextArea();
                 scroll = new JScrollPane();
 
@@ -839,6 +911,7 @@ public class Main extends JFrame implements Runnable{
             } break;
             case 6: {
                 screen3 = new JFrame();
+                screen3.setAlwaysOnTop(true);
                 photo5 = new JLabel();
 
                 screen3.setPreferredSize(new Dimension(1000, 800));
@@ -929,8 +1002,11 @@ public class Main extends JFrame implements Runnable{
         out4.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                state=st;
-                screen2.dispose();
+                if(state==nscreen.ON_PAINTINGS_AUTHOR){
+                    state=st;
+                    screen2.dispose();
+                }
+
             }
         });
         screen2.addWindowListener(new WindowAdapter() {
@@ -1103,8 +1179,8 @@ public class Main extends JFrame implements Runnable{
                 rangeX =fm.interactionBox().width();
                 rangeY = 2*fm.interactionBox().height();
 
-                float POSX= fm.hands().get(0).palmPosition().getX();
-                float POSY = fm.hands().get(0).palmPosition().getY();
+                float POSX= ref.palmPosition().getX();
+                float POSY = ref.palmPosition().getY();
                 POSY = POSY<15 ? 0:POSY;
 
                 int X =  (int)((POSX+rangeX)*(wth/(2*rangeX)));
@@ -1127,7 +1203,8 @@ public class Main extends JFrame implements Runnable{
                 if(onlyindex)
                     robot.mouseMove(X,Y);
 
-                if(closed && (System.currentTimeMillis()-timegesture)>2000){
+
+                if(ref.sphereRadius()<42 && (System.currentTimeMillis()-timegesture)>2000){
                     timegesture=System.currentTimeMillis();
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
@@ -1137,12 +1214,12 @@ public class Main extends JFrame implements Runnable{
 
                     switch (state){
                         case ON_GALLERY1:
-                            if(Math.abs(ref.palmNormal().getX())>0.85){
-                                if(ref.palmVelocity().getX()>100){
+                            if(!onlyindex && Math.abs(ref.palmNormal().getX())>0.85){
+                                if(ref.palmVelocity().getX()>125){
                                     timegesture=System.currentTimeMillis();
                                     nextAuthor();
                                 }
-                                else if(ref.palmVelocity().getX()<-100){
+                                else if(ref.palmVelocity().getX()<-125){
                                     timegesture=System.currentTimeMillis();
                                     previousAuthor();
                                 }
@@ -1153,13 +1230,13 @@ public class Main extends JFrame implements Runnable{
                         case ON_GALLERY2:
                         case ON_PAINTINGS_AUTHOR:
 
-                            if(Math.abs(ref.palmNormal().getX())>0.85){
-                                if(ref.palmVelocity().getX()>100){
+                            if(!onlyindex && Math.abs(ref.palmNormal().getX())>0.85){
+                                if(ref.palmVelocity().getX()>125){
                                     timegesture=System.currentTimeMillis();
                                     nextPaint();
                                 }
 
-                                else if(ref.palmVelocity().getX()<-100){
+                                else if(ref.palmVelocity().getX()<-125){
                                     timegesture=System.currentTimeMillis();
                                     previousPaint();
                                 }
@@ -1179,7 +1256,7 @@ public class Main extends JFrame implements Runnable{
                                     right = fm.hands().get(0);
                                 }
 
-                                if (Math.abs(left.palmNormal().getX()) > 0.85 && Math.abs(right.palmNormal().getX()) > 0.85){
+                                if (!onlyindex && Math.abs(left.palmNormal().getX()) > 0.85 && Math.abs(right.palmNormal().getX()) > 0.85){
                                     double distance = Math.abs(left.palmPosition().getX()-right.palmPosition().getX());
                                     double ratio = distance/rangeX;
                                     if (Math.abs(left.palmVelocity().getX()) > 25 && Math.abs(right.palmVelocity().getX()) > 25){
@@ -1193,7 +1270,8 @@ public class Main extends JFrame implements Runnable{
                                 }
                             }
 
-                            if(ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200){
+                            if(!onlyindex && Math.abs(ref.palmNormal().getX()) > 0.4 && Math.abs(ref.palmNormal().getX())  < 0.7 && ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200){
+                                timegesture = System.currentTimeMillis();
                                 screen3.dispose();
                                 state = last;
                             }
@@ -1201,7 +1279,7 @@ public class Main extends JFrame implements Runnable{
                         case ON_INFO:
                             int max_scroll = scroll.getVerticalScrollBar().getMaximum()-scroll.getVerticalScrollBar().getVisibleAmount();
 
-                            if (ref.palmNormal().getZ() < -0.4){
+                            if (!onlyindex && ref.palmNormal().getZ() < -0.4){
 
                                 if((System.currentTimeMillis()-delay_scroll)>300 && scroll_pos > 0){
                                     delay_scroll =  System.currentTimeMillis();
@@ -1210,7 +1288,7 @@ public class Main extends JFrame implements Runnable{
                                 }
                             }
 
-                            else if( (System.currentTimeMillis()-delay_scroll)>300 && ref.palmNormal().getZ() > 0.25){
+                            else if(!onlyindex &&  (System.currentTimeMillis()-delay_scroll)>300 && ref.palmNormal().getZ() > 0.25){
                                 delay_scroll=System.currentTimeMillis();
                                 scroll_pos += 20;
                                 if( scroll_pos < max_scroll){
@@ -1218,7 +1296,8 @@ public class Main extends JFrame implements Runnable{
                                 }
                             }
 
-                            if(ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200){
+                            if(!onlyindex && Math.abs(ref.palmNormal().getX()) > 0.4 && Math.abs(ref.palmNormal().getX())  < 0.7 && ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200){
+                                timegesture = System.currentTimeMillis();
                                 screen4.dispose();
                                 state = last;
                             }

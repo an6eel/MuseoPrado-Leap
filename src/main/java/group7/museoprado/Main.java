@@ -104,6 +104,9 @@ public class Main extends JFrame implements Runnable{
 
     private nscreen state;
     private Robot robot;
+    int scroll_pos;
+    long delay_scroll;
+    private nscreen last;
 
     public Main() throws InterruptedException, ExecutionException, IOException, AWTException {
 
@@ -125,11 +128,12 @@ public class Main extends JFrame implements Runnable{
 
         initComponents();
         state=nscreen.ON_MUSEUM;
-
+        scroll_pos = 0;
+        delay_scroll=0;
 
     }
 
-    private void configure(int screen){
+    private void configure(int screen) throws IOException {
 
         switch (screen){
             case 0: {
@@ -314,7 +318,11 @@ public class Main extends JFrame implements Runnable{
                 info.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        openInfo(0,state);
+                        try {
+                            openInfo(0,state);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 });
                 gallery1.getContentPane().add(info);
@@ -396,6 +404,16 @@ public class Main extends JFrame implements Runnable{
                 photo.setBounds(150,100,700,500);
                 photo.setVisible(true);
 
+                photo.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        try {
+                            onImage(photo.getIcon());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
                 bggallery.setIcon(new ImageIcon(new javax.swing.ImageIcon(PATH+"/src/main/assets/bg.jpg").getImage().getScaledInstance(gallery1.getWidth(),gallery1.getHeight(), Image.SCALE_DEFAULT)));
                 bggallery.setPreferredSize(new Dimension(gallery1.getWidth(), gallery1.getHeight()));
                 bggallery.setMinimumSize(new Dimension(gallery1.getWidth(), gallery1.getHeight()));
@@ -466,7 +484,11 @@ public class Main extends JFrame implements Runnable{
                 info2.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        openInfo(1,state);
+                        try {
+                            openInfo(1,state);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 });
                 gallery2.getContentPane().add(info2);
@@ -545,6 +567,17 @@ public class Main extends JFrame implements Runnable{
                 photo2.setBounds(150,100,700,500);
                 photo2.setVisible(true);
 
+                photo2.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        try {
+                            onImage(photo2.getIcon());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+
                 bggallery.setIcon(new ImageIcon(new javax.swing.ImageIcon(PATH+"/src/main/assets/bg.jpg").getImage().getScaledInstance(gallery2.getWidth(),gallery2.getHeight(), Image.SCALE_DEFAULT)));
                 bggallery.setPreferredSize(new Dimension(gallery2.getWidth(), gallery2.getHeight()));
                 bggallery.setMinimumSize(new Dimension(gallery2.getWidth(), gallery2.getHeight()));
@@ -610,7 +643,11 @@ public class Main extends JFrame implements Runnable{
                 info3.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        openInfo(1,state);
+                        try {
+                            openInfo(0,state);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 });
                 screen1.getContentPane().add(info3);
@@ -643,6 +680,16 @@ public class Main extends JFrame implements Runnable{
                 screen1.getContentPane().add(photo3);
                 photo3.setBounds(150,100,700,500);
                 photo3.setVisible(true);
+                photo3.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        try {
+                            onImage(photo3.getIcon());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
 
                 screen1.getContentPane().add(bggallery);
             } break;
@@ -679,6 +726,16 @@ public class Main extends JFrame implements Runnable{
                 screen2.getContentPane().add(photo4);
                 photo4.setBounds(150,100,700,500);
                 photo4.setVisible(true);
+                photo4.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        try {
+                            onImage(photo4.getIcon());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
 
                 info4.setBackground(new Color(107, 50, 4));
                 info4.setText("Información Obra");
@@ -690,7 +747,11 @@ public class Main extends JFrame implements Runnable{
                     @Override
                     public void mouseClicked(MouseEvent e) {
 
-                        openInfo(1,state);
+                        try {
+                            openInfo(1,state);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 });
                 screen2.getContentPane().add(info4);
@@ -776,14 +837,45 @@ public class Main extends JFrame implements Runnable{
                 scroll.setBounds(0,0,400,400);
 
             } break;
+            case 6: {
+                screen3 = new JFrame();
+                photo5 = new JLabel();
+
+                screen3.setPreferredSize(new Dimension(1000, 800));
+                screen3.setResizable(false);
+                screen3.setTitle("Imagen");
+                Container frame1ContentPane = screen3.getContentPane();
+                frame1ContentPane.setLayout(null);
+                screen3.pack();
+                screen3.setLocationRelativeTo(screen3.getOwner());
+                screen3.setVisible(true);
+                screen3.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        state=last;
+                    }
+                });
+
+                photo5.setPreferredSize(new Dimension(1000, 800));
+                photo5.setOpaque(true);
+                photo5.setBorder(new LineBorder(new Color(91, 138, 227), 5, true));
+                screen3.getContentPane().add(photo5);
+                photo5.setBounds(0,0,1000,800);
+                photo5.setHorizontalAlignment(JLabel.CENTER);
+                photo5.setMaximumSize(new Dimension(1000,800));
+
+
+
+            } break;
         }
     }
 
-    void initComponents(){
+    void initComponents() throws IOException {
         gallery1 = new JFrame();
         gallery2 = new JFrame();
         screen1 = new JFrame();
         screen2 = new JFrame();
+        screen3 = new JFrame();
         screen4 = new JFrame();
         configure(0);
     }
@@ -862,6 +954,16 @@ public class Main extends JFrame implements Runnable{
 
     }
 
+    private void onImage(Icon icon) throws IOException {
+        configure(6);
+
+        last=state;
+        state=nscreen.ON_SHOW;
+
+        photo5.setIcon(icon);
+
+    }
+
     private void nextAuthor() throws ExecutionException, InterruptedException, IOException {
         QueryDocumentSnapshot q=db.nextArtist();
         String urlp = (String) q.get("urlImg");
@@ -896,10 +998,20 @@ public class Main extends JFrame implements Runnable{
                 ImageIcon icon = new ImageIcon(scaled);
                 photo2.setIcon(icon);
                 break;
+            case ON_PAINTINGS_AUTHOR:
+                QueryDocumentSnapshot z=db.getPreviousPaint();
+                name4.setText(z.getId());
+                String urlz = (String) z.get("url");
+                URL urlx = new URL(urlz);
+                Image imagez = ImageIO.read(urlx);
+                Image scaledz = imagez.getScaledInstance(photo4.getWidth(),photo4.getHeight(),Image.SCALE_DEFAULT);
+                ImageIcon iconz = new ImageIcon(scaledz);
+                photo4.setIcon(iconz);
+                break;
         }
     }
 
-    private void openInfo(int type,nscreen st) {
+    private void openInfo(int type,nscreen st) throws IOException {
         configure(5);
         final nscreen sts=st;
         state=nscreen.ON_INFO;
@@ -910,6 +1022,7 @@ public class Main extends JFrame implements Runnable{
                 super.windowClosing(e);
             }
         });
+        last = st;
         String text;
         if(type==1){
             text = db.getInfoPaint();
@@ -979,50 +1092,10 @@ public class Main extends JFrame implements Runnable{
 
                 // IMPLEMENT LEAP ACTIONS
 
-                double beginX=0,beginY=0,wth=0,ht=0;
+                double wth,ht;
                 double rangeX,rangeY;
 
-                switch (state){
-                    case ON_MAIN:
-                    case ON_MUSEUM:
-                        beginX= this.getLocation().x;
-                        beginY= this.getLocation().y;
-                        wth= this.getWidth();
-                        ht = this.getHeight();
-                        break;
-                    case ON_GALLERY1:
-                        beginX = gallery1.getLocation().x;
-                        beginY = gallery1.getLocation().y;
-                        wth= gallery1.getWidth();
-                        ht = gallery1.getHeight();
-                        break;
-                    case ON_GALLERY2:
-                        beginX = gallery2.getLocation().x;
-                        beginY = gallery2.getLocation().y;
-                        wth= gallery2.getWidth();
-                        ht = gallery2.getHeight();
-                        break;
-                    case ON_AUTHOR:
-                        beginX = screen1.getLocation().x;
-                        beginY = screen1.getLocation().y;
-                        wth= screen1.getWidth();
-                        ht = screen1.getHeight();
-                        break;
-                    case ON_PAINTINGS_AUTHOR:
-                        beginX = screen2.getLocation().x;
-                        beginY = screen2.getLocation().y;
-                        wth= screen2.getWidth();
-                        ht = screen2.getHeight();
-                        break;
-                    case ON_INFO:
-                        // TODO
-                        break;
-                    case ON_SHOW:
-                        //TODO
-                        break;
-                }
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                beginX = beginY = 0;
 
                 wth = screenSize.getWidth();
                 ht = screenSize.getHeight();
@@ -1034,8 +1107,8 @@ public class Main extends JFrame implements Runnable{
                 float POSY = fm.hands().get(0).palmPosition().getY();
                 POSY = POSY<15 ? 0:POSY;
 
-                int X = (int)beginX + (int)((POSX+rangeX)*(wth/(2*rangeX)));
-                int Y = (int)beginY + (int)((rangeY-POSY)*(ht/(rangeY)));
+                int X =  (int)((POSX+rangeX)*(wth/(2*rangeX)));
+                int Y = (int)((rangeY-POSY)*(ht/(rangeY)));
 
                 boolean onlyindex=true;
                 boolean closed = true;
@@ -1060,9 +1133,6 @@ public class Main extends JFrame implements Runnable{
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
 
-                // TODO PENSAR MAS GESTOS
-
-                //System.out.println(ref.palmNormal().getX());
                 if((System.currentTimeMillis()-timegesture)>2000){
 
                     switch (state){
@@ -1083,29 +1153,7 @@ public class Main extends JFrame implements Runnable{
                         case ON_GALLERY2:
                         case ON_PAINTINGS_AUTHOR:
 
-                            if(fm.hands().count()==2){
-                                Hand left,right;
-
-                                if (fm.hands().get(0).isLeft()){
-                                    left = fm.hands().get(0);
-                                    right = fm.hands().get(1);
-                                }
-                                else{
-                                    left = fm.hands().get(1);
-                                    right = fm.hands().get(0);
-                                }
-
-                                if (Math.abs(left.palmNormal().getX()) > 0.85 && Math.abs(right.palmNormal().getX()) > 0.85){
-                                    if (left.palmVelocity().getX() < -25 && right.palmVelocity().getX() > 25){
-                                        System.out.println("ZOOM IN");
-                                    }
-
-                                    else if (left.palmVelocity().getX() > 25 && right.palmVelocity().getX() < -25){
-                                        System.out.println("ZOOM OUT");
-                                    }
-                                }
-                            }
-                            else if(Math.abs(ref.palmNormal().getX())>0.85){
+                            if(Math.abs(ref.palmNormal().getX())>0.85){
                                 if(ref.palmVelocity().getX()>100){
                                     timegesture=System.currentTimeMillis();
                                     nextPaint();
@@ -1119,16 +1167,66 @@ public class Main extends JFrame implements Runnable{
 
                             break;
                         case ON_SHOW:
-                            // TODO ZOOM
+                            if(fm.hands().count()==2){
+                                Hand left,right;
+
+                                if (fm.hands().get(0).isLeft()){
+                                    left = fm.hands().get(0);
+                                    right = fm.hands().get(1);
+                                }
+                                else{
+                                    left = fm.hands().get(1);
+                                    right = fm.hands().get(0);
+                                }
+
+                                if (Math.abs(left.palmNormal().getX()) > 0.85 && Math.abs(right.palmNormal().getX()) > 0.85){
+                                    double distance = Math.abs(left.palmPosition().getX()-right.palmPosition().getX());
+                                    double ratio = distance/rangeX;
+                                    if (Math.abs(left.palmVelocity().getX()) > 25 && Math.abs(right.palmVelocity().getX()) > 25){
+                                        ImageIcon ic= (ImageIcon) photo5.getIcon();
+                                        int w2 = (int) (photo5.getWidth()*ratio);
+                                        int h2 = (int )(photo5.getHeight()*ratio);
+                                        w2 = w2 > photo5.getWidth() ? photo5.getWidth():w2;
+                                        h2 = h2 > photo5.getHeight() ? photo5.getHeight():h2;
+                                        photo5.setIcon(new ImageIcon(ic.getImage().getScaledInstance((w2),(h2),Image.SCALE_SMOOTH)));
+                                    }
+                                }
+                            }
+
+                            if(ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200){
+                                screen3.dispose();
+                                state = last;
+                            }
                             break;
                         case ON_INFO:
-                            if(ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200)
+                            int max_scroll = scroll.getVerticalScrollBar().getMaximum()-scroll.getVerticalScrollBar().getVisibleAmount();
+
+                            if (ref.palmNormal().getZ() < -0.4){
+
+                                if((System.currentTimeMillis()-delay_scroll)>300 && scroll_pos > 0){
+                                    delay_scroll =  System.currentTimeMillis();
+                                    scroll_pos -= 20;
+                                    scroll.getVerticalScrollBar().setValue(scroll_pos);
+                                }
+                            }
+
+                            else if( (System.currentTimeMillis()-delay_scroll)>300 && ref.palmNormal().getZ() > 0.25){
+                                delay_scroll=System.currentTimeMillis();
+                                scroll_pos += 20;
+                                if( scroll_pos < max_scroll){
+                                    scroll.getVerticalScrollBar().setValue(scroll_pos);
+                                }
+                            }
+
+                            if(ref.palmVelocity().getX()<-200 && ref.palmVelocity().getY()<-200){
                                 screen4.dispose();
+                                state = last;
+                            }
+
                             break;
                     }
                 }
 
-                //System.out.println(ref.palmNormal().getX()+" "+ ref.palmNormal().getY()+" "+ref.palmNormal().getZ());
             }
             else {
                 rcg.setText("Not recognizing...");
@@ -1147,11 +1245,6 @@ public class Main extends JFrame implements Runnable{
     @Override
     public void run() {
         while(true){
-            /*Frame fm=lp.getUltimoFrame();
-            if(fm.hands().count()==1){
-                Hand hd = fm.hands().get(0);
-                System.out.println(hd.palmPosition().getX());
-            }*/
             try {
                 listen();
             } catch (InterruptedException e) {

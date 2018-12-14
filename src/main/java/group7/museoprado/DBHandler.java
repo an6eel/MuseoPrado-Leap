@@ -168,6 +168,15 @@ public class DBHandler {
         return paintings.get(INDEX_PAINT);
     }
 
+    public QueryDocumentSnapshot getPreviousPaint(){
+        if(INDEX_PAINT==0)
+            INDEX_PAINT=paintings.size()-1;
+        else
+            INDEX_PAINT--;
+
+        return paintings.get(INDEX_PAINT);
+    }
+
     public QueryDocumentSnapshot getPreviousArtist(){
         if(INDEX_PAINT==0)
             INDEX_PAINT=paintings.size()-1;
